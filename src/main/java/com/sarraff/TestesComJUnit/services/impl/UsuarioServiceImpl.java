@@ -11,6 +11,7 @@ import com.sarraff.TestesComJUnit.domain.Usuario;
 import com.sarraff.TestesComJUnit.domain.dto.UsuarioDTO;
 import com.sarraff.TestesComJUnit.repositories.UsuarioRepository;
 import com.sarraff.TestesComJUnit.services.UsuarioService;
+import com.sarraff.TestesComJUnit.services.exceptions.DataIntegratyViolationException;
 import com.sarraff.TestesComJUnit.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -35,6 +36,21 @@ public class UsuarioServiceImpl implements UsuarioService{
 
 	@Override
 	public Usuario create(UsuarioDTO obj) {
+		findByEmail(obj);
+		return usuarioRepository.save(mapper.map(obj, Usuario.class));
+	}
+	
+	private void findByEmail(UsuarioDTO obj) {
+		Optional<Usuario> usuario = usuarioRepository.findByEmail(obj.getEmail());
+		
+		if(usuario.isPresent() && !usuario.get().getId().equals(obj.getId())) {
+			throw new DataIntegratyViolationException("Email já cadastrado no sistema");
+		}
+	}
+
+	@Override
+	public Usuario update(UsuarioDTO obj) {
+		findByEmail(obj);
 		return usuarioRepository.save(mapper.map(obj, Usuario.class));
 	}
 	
