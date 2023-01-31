@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.sarraff.TestesComJUnit.domain.Usuario;
 import com.sarraff.TestesComJUnit.domain.dto.UsuarioDTO;
 import com.sarraff.TestesComJUnit.repositories.UsuarioRepository;
+import com.sarraff.TestesComJUnit.services.exceptions.ObjectNotFoundException;
 
 @SpringBootTest
 class UsuarioServiceImplTest {
@@ -67,6 +68,18 @@ class UsuarioServiceImplTest {
 		assertEquals(ID, response.getId());
 		assertEquals(NOME, response.getName());
 		assertEquals(EMAIL, response.getEmail());
+	}
+	
+	@Test
+	void whenFindByIdRetorneObjectNotFoundException() {
+		when(usuarioRepository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Objeto não encontrado"));
+		
+		try {
+			service.findById(ID);
+		} catch (Exception e) {
+			assertEquals(ObjectNotFoundException.class, e.getClass());
+			assertEquals("Objeto não encontrado", e.getMessage());
+		}
 	}
 
 	@Test
