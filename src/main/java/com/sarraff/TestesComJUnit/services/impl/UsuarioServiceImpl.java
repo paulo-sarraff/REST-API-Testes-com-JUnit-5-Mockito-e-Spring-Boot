@@ -53,5 +53,11 @@ public class UsuarioServiceImpl implements UsuarioService{
 		findByEmail(obj);
 		return usuarioRepository.save(mapper.map(obj, Usuario.class));
 	}
+
+	@Override
+	public void delete(Integer id) {
+		findById(id);
+		usuarioRepository.deleteById(id);
+	}
 	
 }
