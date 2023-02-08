@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.sarraff.TestesComJUnit.domain.Usuario;
 import com.sarraff.TestesComJUnit.domain.dto.UsuarioDTO;
 import com.sarraff.TestesComJUnit.repositories.UsuarioRepository;
+import com.sarraff.TestesComJUnit.services.exceptions.DataIntegratyViolationException;
 import com.sarraff.TestesComJUnit.services.exceptions.ObjectNotFoundException;
 
 @SpringBootTest
@@ -115,6 +117,19 @@ class UsuarioServiceImplTest {
 		
 	}
 
+	@Test
+	void whenCreateThenReturnDataIntegrityViolationException() {
+		when(usuarioRepository.findByEmail(anyString())).thenReturn(optionalUsuario);
+		
+		try {
+			optionalUsuario.get().setId(2);
+			service.create(usuarioDTO);
+		}catch(Exception e) {
+			assertEquals(DataIntegratyViolationException.class, e.getClass());
+			assertEquals("Email já cadastrado no sistema", e.getMessage());
+		}
+	}
+	
 	@Test
 	void testUpdate() {
 	}
