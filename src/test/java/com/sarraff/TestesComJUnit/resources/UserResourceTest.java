@@ -7,6 +7,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.sarraff.TestesComJUnit.domain.Usuario;
@@ -77,8 +81,23 @@ class UserResourceTest {
 	}
 	
 	@Test
-	void test2() {
-		fail("Not yet implemented");
+	void whenFindAllThenReturnAListOfUserDTO() {
+		when(service.findAll()).thenReturn(List.of(usuario));
+		when(mapper.map(any(), any())).thenReturn(usuarioDTO);
+		
+		ResponseEntity<List<UsuarioDTO>> response = resource.findAll();
+		
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertEquals(ArrayList.class, response.getBody().getClass());
+		assertEquals(UsuarioDTO.class, response.getBody().get(INDEX).getClass());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		
+		assertEquals(ID, response.getBody().get(INDEX).getId());
+		assertEquals(NOME, response.getBody().get(INDEX).getName());
+		assertEquals(EMAIL, response.getBody().get(INDEX).getEmail());
+		assertEquals(PASSWORD, response.getBody().get(INDEX).getPassword());
 	}
 	
 	@Test
