@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.catalina.connector.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,8 +113,21 @@ class UserResourceTest {
 	}
 	
 	@Test
-	void test4() {
-		fail("Not yet implemented");
+	void whenUpdateThenReturnSuccess() {
+		when(service.update(usuarioDTO)).thenReturn(usuario);
+		when(mapper.map(any(), any())).thenReturn(usuarioDTO);
+		
+		ResponseEntity<UsuarioDTO> response = resource.update(ID, usuarioDTO);
+		
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(ResponseEntity.class, response.getClass());
+		assertEquals(UsuarioDTO.class, response.getBody().getClass());
+		
+		assertEquals(ID, response.getBody().getId());
+		assertEquals(NOME, response.getBody().getName());
+		assertEquals(EMAIL, response.getBody().getEmail());
+		
 	}
 	
 	@Test
