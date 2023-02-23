@@ -40,7 +40,7 @@ class UserResourceTest {
 
 	private static final Integer ID = 1;
 	
-	private Usuario usuario;
+	private Usuario usuario = new Usuario();
 	
 	private UsuarioDTO usuarioDTO;
 	
